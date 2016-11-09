@@ -10,16 +10,13 @@ class Player(object):
 
 	dealer: True if you are dealer, False if you are not
 
-	hand: represents hand of player; defaults to empty list """
+	hand: represents hand of player; defaults to an empty array """
 
-	def __init__(self, name = "", dealer = False, hand = []):
+	_counter = 0
+
+	def __init__(self):
 		
-		self.name = name
-		self.dealer = dealer
-		self.hand = hand
-
-	def hit(self, card):
-		# Adds a card to the hand
-
-		self.hand.append(card)
-		return self.hand
+		Player._counter += 1
+		self.name = ""
+		self.dealer = False
+		self.hand = []

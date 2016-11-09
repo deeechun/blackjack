@@ -1,5 +1,4 @@
 from deck import Deck
-from game import Game
 from player import Player
 
 import sys
@@ -24,18 +23,21 @@ while game_over == False:
 		deck = Deck()
 
 		print("Alright " + player_1.name + "! Let's begin ~")
+		print("* swipe swipe swipe swipe swipe *")
+
+		for player in players_in_game_array:
+			for card in range(2):
+				deck.deal_one_card(player)
+		print("Okay, here are your cards! " + player_1.hand[0], player_1.hand[1])
+		
 
 		while game_over == False:
-			print("* swipe swipe swipe swipe swipe *")
+		
+			hit_or_stay = input("Would you like to hit or stay? (hit/stay) ")
+			if hit_or_stay.lower() == "hit" or hit_or_stay.lower() == "h":
+				deck.deal_one_card(player)
 
-			for player in players_in_game_array:
-				for card in range(2):
-					deck.deal_one_card(player)
-			print(dealer.hand)
-			print(player_1.hand)
-
-
-
+				print("Your new total is")
 
 			game_over = True
 

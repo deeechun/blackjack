@@ -17,6 +17,20 @@ class Deck(object):
         self.suits = suits
         self.deck = [value + suit for suit in self.suits for value in self.values]
 
+
+    def deal_one_card(self, player):
+        """ Pops off a card from the deck at a pseudo-random index and adds it to player's hand
+
+        Args: player MUST represent an instance of the class Player
+
+        Returns: player with a new hand"""
+
+        import random
+        from math import floor
+        dealt_card = self.deck.pop(floor(random.random()*len(self.deck)))
+        player.hand.append(dealt_card)
+        return player
+
     """ How do I properly use properties?
 
     @property

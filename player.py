@@ -14,9 +14,9 @@ class Player(object):
 
 	_counter = 0
 
-	def __init__(self):
+	def __init__(self,name = "", dealer = False):
 		
 		Player._counter += 1
-		self.name = ""
+		self.name = name
 		self.dealer = False
 		self.hand = []

@@ -20,3 +20,5 @@ class Player(object):
 		self.name = name
 		self.dealer = False
 		self.hand = []
+
+		"""I have some quick questions about init parameters"""

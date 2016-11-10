@@ -24,10 +24,7 @@ if play_game.lower() == "y" or play_game.lower() == "yes":
 
 	blackjack.deal_round()
 	blackjack.show_player_cards()
-	blackjack.hit_or_stay_round()
-	
-
-	sys.exit()
+	blackjack.hit_or_stay()	
 
 
 if play_game.lower() == "n" or play_game.lower() == "no":

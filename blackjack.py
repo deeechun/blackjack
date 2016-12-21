@@ -22,8 +22,12 @@ class Blackjack(object):
     @staticmethod
     def setup_game():
         """Sets up blackjack game. The game will exit here if user does not want to play
+        
+        This is a static method because there is no reference to self
 
-        Returns no value """
+        Creates Blackjack object with two Player objects: one dealer and one player
+
+        Returns Blackjack object """
 
         play_game = input("Hello, welcome to Las Vegas! Would you care to pl"
                     "ay some blackjack? It's a one on one! (y/n) ")
@@ -209,6 +213,10 @@ class Blackjack(object):
             return 1
 
     def start_game(self):
+        """Facilitates round after set up
+
+        Uses methods of this class to player one round of blackjack"""
+
         game_over = False
         dealer, player = self.players[0], self.players[1] 
         while game_over == False:

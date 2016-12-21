@@ -165,8 +165,10 @@ class Blackjack(object):
         dealer: This function takes in a Player object
 
         Returns: the same Player object taken as the argument"""
-
+        dealer_cards = dealer.hand
         hand_value = self.get_value_of_hand(dealer)
+        print("The dealer flips his other card... ")
+        print("It's a " + dealer_cards[0].raw_card)
         print("The value of the dealer's hand is ", end = ""), print(hand_value)
 
         while hand_value < 17:

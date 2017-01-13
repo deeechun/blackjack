@@ -55,13 +55,3 @@ class Deck(object):
         # and stores in dealt_card namespace
         dealt_card = self.cards.pop(floor(random()*len(self.cards)))
         return dealt_card
-
-    """ How do I properly use properties?
-
-    @property
-    def deck(self):
-        return self.deck
-
-    @deck.setter
-    def deck(self, deck):
-        self.deck = deck"""

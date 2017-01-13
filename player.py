@@ -30,6 +30,9 @@ class Player(object):
 		
 		for card in self.hand:
 			card_value = card.get_numerical_value_of_card()
-			mihand_value += card_value
+			hand_value += card_value
 		return hand_value
 
+	def clear_hand(self):
+		"""Sets hand attribute to original empty array """
+		self.hand = []

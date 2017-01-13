@@ -23,10 +23,9 @@ class Blackjack(object):
     def show_player_cards(self):
         """ This function returns no value.
 
-        It only prints out the raw_value of the Card objects in the players hands 
+        It only prints out the raw_card of the Card objects in the players hands 
 
         """
-
 
         dealer = self.players[0]
         player = self.players[len(self.players) - 1]
@@ -39,10 +38,25 @@ class Blackjack(object):
             print("BLACKJACK! You win!")
             sys.exit()
 
-    def show_dealer_card(self):
+    def check_for_blackjack(self, player):
+        """ Checks initial hand for blackjack
+
+        Args: player is a Player object
+
+        Returns: True if the player has a blackjack
+
+        False if the player has any other value """
+        hand_value = player.get_value_of_hand()
+        if hand_value = 21:
+            return True
+        else:
+            return False
+
+    def dealer_shown_card(self):
+        """ Prints out dealer's flipped card onto the terminal """
         dealer = self.players[0]
-        dealer_card = dealer.hand[1].raw_card
-        print("The dealer is showing a " + dealer_card)
+        dealer_shown_card = dealer.hand[1]
+        return dealer_shown_card
 
     def player_hit_or_stay(self, player):
         """ Facilitates the hit/stay round for Player object that has
@@ -57,6 +71,7 @@ class Blackjack(object):
         Returns: True if Player object chooses to hit; False if Player object 
         chooses to stay """
 
+        # Uses method from Player class that returns the numerical value of the hand
         hand_value = player.get_value_of_hand()
 
         if hand_value >= 21:
@@ -91,6 +106,7 @@ class Blackjack(object):
         dealer: This function takes in a Player object
 
         Returns: the same Player object taken as the argument"""
+        
         dealer_cards = dealer.hand
         hand_value = dealer.get_value_of_hand()
         print("The dealer flips his other card... ")
@@ -153,6 +169,7 @@ class Blackjack(object):
                 print("Alright then! Let's begin ~")
                 print("* swipe swipe swipe swipe *")
 
+                # Loop through players twice and distribute hands to players
                 for player_number in range(2):
                     for player in self.players:
                         dealt_card = self.deck.deal_one_card()
@@ -161,7 +178,9 @@ class Blackjack(object):
 
                 player_turn_over = False
                 self.show_player_cards()
-                self.show_dealer_card()
+                
+                dealers_showing_card = self.dealer_shown_card()
+                print("The dealer is showing " + dealers_showing_card.raw_card)
                 while player_turn_over == False:
                     
                     if self.player_hit_or_stay(player) == False:
@@ -189,4 +208,12 @@ class Blackjack(object):
                     
 
                     round_over = True
-            game_over = True
+           
+            will_play_again = input("Would you like to play another round? ")
+            if will_play_again.lower() == "y" or will_play_again.lower() == "yes":
+                for player in self.players:
+                    # Clears all player's hands
+                    player.clear_hand()
+            else:
+                print("Alright then, good bye!")
+                game_over = True

@@ -4,15 +4,13 @@ class Test_Card_Value(unittest.TestCase):
 	
 	def _makeOne(self):
 
-		""" Create an instance of the Card class
+		""" Create an instance of the Card class to use in the test class
 
 		Attrs:
 
 		value: set to 1
 
-		suit: set to "s" (spades)
-
-		We use this instance throughout our test cases """
+		suit: set to "s" (spades)"""
 
 		from ..card import Card
 		card = Card(1, "s")

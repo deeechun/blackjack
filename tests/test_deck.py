@@ -4,6 +4,8 @@ class Test_Deck(unittest.TestCase):
 
 	def _makeOne(self):
 		
+		"""Create an instance of the Deck class for uses in the test class"""
+
 		from ..deck import Deck
 		deck = Deck()
 		return deck

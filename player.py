@@ -1,5 +1,3 @@
-
-
 class Player(object):
 	
 	""" Class that defines a blackjack player
@@ -22,3 +20,16 @@ class Player(object):
 		self.hand = []
 
 		"""I have some quick questions about init parameters"""
+
+	def get_value_of_hand(self):
+		""" Get numerical value of hand in hand attribute
+
+		Ex: If hand = ['10S', '2D'], returns 12"""
+		
+		hand_value = 0
+		
+		for card in self.hand:
+			card_value = card.get_numerical_value_of_card()
+			mihand_value += card_value
+		return hand_value
+

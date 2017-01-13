@@ -17,6 +17,7 @@ class Deck(object):
         self.suits = suits
         self.deck = [value + suit for suit in self.suits for value in self.values]
 
+
     """ How do I properly use properties?
 
     @property

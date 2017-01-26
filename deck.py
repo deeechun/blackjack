@@ -1,34 +1,52 @@
 from card import Card
+# floor method is used to round down a decimal Ex: 51.9999 will return 51
+from math import floor
+# random method is used to generate a value between 0 and 1
+from random import random
 
 class Deck(object):
     """
     This class represents a deck of cards
-
-    It consists of 52 cards
-
-    A card consists of a suit and a value
-
-    There are 4 suits and 13 value in a deck """
-
+    """
 
     def __init__(self, cards):
+        """
+        :param cards array of Card objects
+        """
         self.cards = cards
 
+
+# ........................................................................... #
+    def get_one_card(self):
+        """ Randomly chooses an index between 0 and the length of the array 
+        and pops off the entry at that index
+
+        :return: dealt_card Card object that is popped off self.cards
+        """
+        
+        # generates an index between 0 and length of the array, then pops off
+        # the entry at that array index and stores in dealt_card namespace
+        number_cards = len(cards)
+        random_card_index = floor(random() * number_cards)
+        dealt_card = self.cards.pop(random_card_index)
+        return dealt_card
+
+
+# ........................................................................... #
     @staticmethod
-    def create_deck_of_card_objects(values, suits):
+    def create_deck_of_cards(values, suits):
         """ Given a list of values and suits, this method will create a list
         of Card objects using those values and suits
 
-        Args: values: an array of string values e.g. ['1','2','foo']
+        :param values array of string values e.g. ['1','2','foo']
+        :param suits array of string values  e.g. ['spades', 'diamonds', 's',
+        'd'] 
 
-        suits: an array of string values  e.g. ['spades', 'diamonds', 's', 'd'] 
+        :return: array_of_Card_objects 
 
-        Returns: array of Card objects 
-
-        Ex: if values = ['1','2','q'] and suits = ['foo','bar'], method will return
-        [<card.Card object at 0x7f330bc173c8>, <card.Card object at 0x7f330bc174e0>, 
-        <card.Card object at 0x7f330bc17518>, <card.Card object at 0x7f330bc176a0>, 
-        <card.Card object at 0x7f330bc176d8>, <card.Card object at 0x7f330bc175c0>]
+        Ex: if values = ['1','2','q'] and suits = ['foo','bar'], method will
+        return [Card('1 of foo'), Card('2 of foo'), Card('q of foo'),
+        Card('1 of bar'), Card('2 of bar'), Card('q of bar')]
         """
 
         array_of_card_objects = []
@@ -39,29 +57,3 @@ class Deck(object):
                 array_of_card_objects.append(card)
 
         return array_of_card_objects
-
-    def deal_one_card(self):
-        """ Randomly chooses an index between 0 and the length of the array 
-        and pops off the entry at that index
-
-        Returns: The card that was popped off as dealt_card
-        """
-        # floor method is used to round down a decimal Ex: 51.9999 will return 51
-        from math import floor
-        from random import random
-        # random method is used to generate a value between 0 and 1
-        
-        # generates an index between 0 and length of the array, then pops off the entry at that array
-        # and stores in dealt_card namespace
-        dealt_card = self.cards.pop(floor(random()*len(self.cards)))
-        return dealt_card
-
-    """ How do I properly use properties?
-
-    @property
-    def deck(self):
-        return self.deck
-
-    @deck.setter
-    def deck(self, deck):
-        self.deck = deck"""

@@ -14,37 +14,67 @@ class Player(object):
 		:param won_round boolean that's True on winning round; defaults False
 		"""
 		Player._counter += 1
-		self.name = name
-		self.is_dealer = False
-		self.hand = []
-		self.blackjack = False
-		self.won_round = False
-		self.busted = False
+		self._name = _name
+		self._is_dealer = is_dealer
+		self._hand = []
+		self._blackjack = blackjack
+		self._won_round = won_round
+		self._busted = busted
+# ........................................................................... #
+	@property
+	def name(self):
+		return _name
 
-	def get_name(self):
-		return self.name
 
-	def get_is_dealer(self):
-		return self.is_dealer
+# ........................................................................... #
+	@property
+	def is_dealer(self):
+		return self._is_dealer
 
-	def get_blackjack(self):
-		return self.blackjack
 
-	def get_won_round(self):
-		return self.won_round
+# ........................................................................... #
+	@property
+	def blackjack(self):
+		return self._blackjack
 
-	def get_busted(self):
-		return self.busted
 
-	def get_hand(self):
-		return self.hand
+# ........................................................................... #
+	@blackjack.setter
+	def blackjack(self, is_blackjack):
+		self._blackjack = is_blackjack
 
-	def set_busted(self, is_busted):
+
+# ........................................................................... #
+	@property
+	def won_round(self):
+		return self._won_round
+
+
+# ........................................................................... #
+	@property
+	def busted(self):
+		return self._busted
+
+
+# ........................................................................... #
+	@property
+	def hand(self):
+		return self._hand
+
+
+# ........................................................................... #
+	@hand.setter
+	def busted(self, is_busted):
 		self.busted = is_busted
 
-	def set_won_round(self, did_win_round):
+
+# ........................................................................... #
+	@won_round.setter
+	def won_round(self, did_win_round):
 		self.won_round = did_win_round
 
+
+# ........................................................................... #
 	def get_value_of_hand(self):
 		""" Get numerical value of hand in hand attribute
 
@@ -59,6 +89,8 @@ class Player(object):
 			hand_value += card_value
 		return hand_value
 
+
+# ........................................................................... #
 	def check_for_blackjack(self):
 		"""
 		Checks to see if numerical value of Player hand is 21
@@ -74,6 +106,8 @@ class Player(object):
 		else:
 			return False
 
+
+# ........................................................................... #
 	def check_bust(self):
 		"""
 		Checks to see if numerical value of hand is greater than 21
@@ -83,6 +117,8 @@ class Player(object):
 			self.busted = True
 		return self.busted
 
+
+# ........................................................................... #
 	def add_card_to_hand(self, card):
 		"""
 		Appends a card to the Player hand array
@@ -94,7 +130,9 @@ class Player(object):
 		self.hand.append(card)
 		return card
 
-	def reset_Player(self):
+
+# ........................................................................... #
+	def reset_player(self):
 		"""
 		Resets hand, blackjack, won_round, and busted attribute back to their
 		defaults

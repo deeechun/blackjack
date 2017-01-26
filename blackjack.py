@@ -10,6 +10,8 @@ class Blackjack(object):
     is the number of players in the game
     """
 
+
+# ........................................................................... #
     def __init__(self, players, dealer, deck):
         """
         :param players array of Player objects
@@ -20,15 +22,23 @@ class Blackjack(object):
         self.dealer = dealer
         self.deck = deck
 
+
+# ........................................................................... #
     def get_dealer(self):
         return self.dealer
 
+
+# ........................................................................... #
     def get_players(self):
         return self.players
 
+
+# ........................................................................... #
     def get_deck(self):
         return self.deck
 
+
+# ........................................................................... #
     def get_revealed_dealer_card(self):
         """
         Gets the revealed card of the dealer after the deal
@@ -39,6 +49,8 @@ class Blackjack(object):
         revealed_dealer_card = dealer_hand[1]
         return revealed_dealer_card
 
+
+# ........................................................................... #
     def deal_round(self):
         """
         Deals cards for one round of blackjack
@@ -52,6 +64,8 @@ class Blackjack(object):
                 player_dealt_card = self.deck.get_one_card()
                 player.add_card_to_hand(player_dealt_card)
 
+
+# ........................................................................... #
     def player_hit_round(self, player, will_hit = False):
         """
         Facilitates the player's hit round in blackjack. Default value for hit is False
@@ -69,6 +83,8 @@ class Blackjack(object):
         else:
             self.stay(player)
 
+
+# ........................................................................... #
     def dealer_hit_round(self):
         """
         The dealer will continue to hit (function below) until the hand value is greater than 17
@@ -81,6 +97,7 @@ class Blackjack(object):
         return dealer_hand_value
 
 
+# ........................................................................... #
     def check_player_beats_dealer(self, player):
         """
         Checks to see if Player in self.players array numerical hand value beats
@@ -98,6 +115,8 @@ class Blackjack(object):
             elif player_hand_value == dealer_hand_value:
                 return None
 
+
+# ........................................................................... #
     def hit(self, player):
         """
         Adds card to hand - acts as 'hit' in blackjack'
@@ -108,14 +127,20 @@ class Blackjack(object):
         player.add_card_to_hand(hit_card)
         return hit_card
 
+
+# ........................................................................... #
     def stay(self, player):
         """
         No function - acts as 'stay' in blackjack
         """
         pass
 
+
+# ........................................................................... #
     def double_down(self, player):
         pass
 
+
+# ........................................................................... #
     def split(self, player):
         pass

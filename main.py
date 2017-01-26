@@ -330,7 +330,8 @@ def reveal_final_dealer_hand_value(blackjack):
     """
     dealer = blackjack.get_dealer()
     dealer_hand_value = dealer.get_value_of_hand()
-    print("The dealer's final total is ", end = ""), print(dealer_hand_value)
+    print("The dealer's final total is ", end = "")
+    print(dealer_hand_value)
 
 
 # ............................................................................ #

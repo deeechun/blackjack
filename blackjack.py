@@ -8,185 +8,114 @@ class Blackjack(object):
 
     """ Class created to run a game of blackjack. All you need to provide
     is the number of players in the game
+    """
 
-    Attrs: players: represents an array of Player objects in game
-
-    deck: the deck being used; represented by an instance of the Deck class
-    An array is found in the object called deck, which contains suit/value pairs
-    Ex: '10H' represents 10 of hearts """
-
-    def __init__(self, players, deck):
+    def __init__(self, players, dealer, deck):
+        """
+        :param players array of Player objects
+        :param dealer instance of Player class
+        :param deck instance of Deck
+        """        
         self.players = players
+        self.dealer = dealer
         self.deck = deck
 
+    def get_dealer(self):
+        return self.dealer
 
-    def show_player_cards(self):
-        """ This function returns no value.
+    def get_players(self):
+        return self.players
 
-        It only prints out the raw_value of the Card objects in the players hands 
+    def get_deck(self):
+        return self.deck
 
+    def get_revealed_dealer_card(self):
         """
+        Gets the revealed card of the dealer after the deal
+        Set it so the card is in index 1 for the dealer
 
+        :returns revealed_dealer_card instance of Card that represents the revealed card"""
+        dealer_hand = self.dealer.get_hand()
+        revealed_dealer_card = dealer_hand[1]
+        return revealed_dealer_card
 
-        dealer = self.players[0]
-        player = self.players[len(self.players) - 1]
-        print("Hey " + player.name + "! Your cards are "
-            + player.hand[0].raw_card + " " + player.hand[1].raw_card)
-        player_hand_value = player.get_value_of_hand()
+    def deal_round(self):
+        """
+        Deals cards for one round of blackjack
 
-        print("Your hand value is ", end = ""), print(player_hand_value)
-        if player_hand_value == 21:
-            print("BLACKJACK! You win!")
-            sys.exit()
+        :param blackjack instance of Blackjack
+        """
+        for card_number in range(2):
+            dealer_dealt_card = self.deck.get_one_card()
+            self.dealer.add_card_to_hand(dealer_dealt_card)
+            for player in self.players:
+                player_dealt_card = self.deck.get_one_card()
+                player.add_card_to_hand(player_dealt_card)
 
-    def show_dealer_card(self):
-        dealer = self.players[0]
-        dealer_card = dealer.hand[1].raw_card
-        print("The dealer is showing a " + dealer_card)
+    def player_hit_round(self, player, will_hit = False):
+        """
+        Facilitates the player's hit round in blackjack. Default value for hit is False
 
-    def player_hit_or_stay(self, player):
-        """ Facilitates the hit/stay round for Player object that has
-        attribute dealer = False
+        :param player instance of Player object
+        :param will_hit boolean to signify whether a player will hit or not
 
-        This modifies the Player object and will return that player
-
-        Argss:
-
-        player: This function takes in a Player object
-
-        Returns: True if Player object chooses to hit; False if Player object 
-        chooses to stay """
-
+        :returns hit_card Card object that the Player just hit
+        """
         hand_value = player.get_value_of_hand()
-
-        if hand_value >= 21:
-            return True
-
+        player_name = player.get_name()
+        if will_hit == True:
+            hit_card = self.hit(player)
+            return hit_card
         else:
-            will_hit_or_stay = input("Would you like to hit or stay? (hit/stay) ")
+            self.stay(player)
+
+    def dealer_hit_round(self):
+        """
+        The dealer will continue to hit (function below) until the hand value is greater than 17
+        """
+        dealer_cards = self.dealer.get_hand()
+        dealer_hand_value = self.dealer.get_value_of_hand()
+        while dealer_hand_value < 17:
+            self.hit(self.dealer)
+            dealer_hand_value = self.dealer.get_value_of_hand()
+        return dealer_hand_value
+
+
+    def check_player_beats_dealer(self, player):
+        """
+        Checks to see if Player in self.players array numerical hand value beats
+        dealer's hand in blackjack game
         
 
-            if will_hit_or_stay.lower() == "hit" or will_hit_or_stay.lower() == "h":
-                player_dealt_card = self.deck.deal_one_card()
-                player.hand.append(player_dealt_card)
-
-                hand_value = player.get_value_of_hand()
-                print("You drew a "+ player_dealt_card.raw_card)
-                print("Your new total is ", end = ""); print(hand_value)
+        """
+        dealer_hand_value = self.dealer.get_value_of_hand()
+        for player in self.players:
+            player_hand_value = player.get_value_of_hand
+            if player.get_busted_value() == True:
                 return False
-
-            elif will_hit_or_stay.lower() == "stay" or will_hit_or_stay.lower() == "s":
+            elif player_hand_value > dealer_hand_value:
                 return True
+            elif player_hand_value == dealer_hand_value:
+                return None
 
-            else:
-                print("I didn't get that. Could you say it again?")
+    def hit(self, player):
+        """
+        Adds card to hand - acts as 'hit' in blackjack'
 
+        :param player instance of Player class
+        """
+        hit_card = self.deck.get_one_card()
+        player.add_card_to_hand(hit_card)
+        return hit_card
 
-    def dealer_hit_or_stay(self, dealer):
-        """ Facilitates the hit/stay round for Player object that has
-        attribute dealer = False
+    def stay(self, player):
+        """
+        No function - acts as 'stay' in blackjack
+        """
+        pass
 
-        This modifies the Player object and will return that Player 
+    def double_down(self, player):
+        pass
 
-        dealer: This function takes in a Player object
-
-        Returns: the same Player object taken as the argument"""
-        dealer_cards = dealer.hand
-        hand_value = dealer.get_value_of_hand()
-        print("The dealer flips his other card... ")
-        print("It's a " + dealer_cards[0].raw_card)
-        print("The value of the dealer's hand is ", end = ""), print(hand_value)
-
-        while hand_value < 17:
-            dealer_dealt_card = self.deck.deal_one_card()
-            dealer.hand.append(dealer_dealt_card)
-
-            print("The dealer has drawn a ", end = ""), print(dealer_dealt_card.raw_card)
-            hand_value = dealer.get_value_of_hand()
-            print("The dealer's new total is ", end = ""), print(hand_value)
-            if hand_value > 21:
-                print("The dealer has bust! You win!")
-                sys.exit()
-        return dealer
-
-    def compare_dealer_and_player_hand_values(self, dealer, player):
-        """ Compares two Player object hands
-
-        Args:
-
-        dealer: a Player object with a dealer attribute = True
-
-        player: a Player object with a dealer attribute = False
-
-        Returns:
-
-        -1: if dealer hand is greater than player hand
-
-        0: if dealer hand equals player hand
-
-        1: if player hand is greater than dealer hand """
-
-        dealer_hand_value = dealer.get_value_of_hand()
-
-        player_hand_value = player.get_value_of_hand()
-
-        if dealer_hand_value == player_hand_value:
-            return 0
-
-        elif dealer_hand_value > player_hand_value:
-            return -1
-
-        else:
-            return 1
-
-    def start_game(self):
-        """Facilitates round after set up
-
-        Uses methods of this class to player one round of blackjack"""
-
-        game_over = False
-        dealer, player = self.players[0], self.players[1] 
-        while game_over == False:
-            round_over = False
-            
-            while round_over == False:
-                print("Alright then! Let's begin ~")
-                print("* swipe swipe swipe swipe *")
-
-                for player_number in range(2):
-                    for player in self.players:
-                        dealt_card = self.deck.deal_one_card()
-                        player.hand.append(dealt_card)
-
-
-                player_turn_over = False
-                self.show_player_cards()
-                self.show_dealer_card()
-                while player_turn_over == False:
-                    
-                    if self.player_hit_or_stay(player) == False:
-                        pass
-                    else:
-                        player_turn_over = True
-
-                player_hand_value = player.get_value_of_hand()
-
-                if player_hand_value > 21:
-                    print("Oh, no! Bust!")
-                    round_over = True
-
-                elif player_hand_value <= 21:
-
-                    self.dealer_hit_or_stay(dealer)
-                    if self.compare_dealer_and_player_hand_values(dealer, player) == 0:
-                        print("It's a draw!")
-
-                    elif self.compare_dealer_and_player_hand_values(dealer, player) == 1:
-                        print("You win!")
-
-                    else:
-                        print("You lose D:")
-                    
-
-                    round_over = True
-            game_over = True
+    def split(self, player):
+        pass

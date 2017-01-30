@@ -4,24 +4,27 @@
 from deck import Deck
 from player import Player
 from blackjack import Blackjack
-import sys
 
 
 # ............................................................................ #
 def check_equal_yes_or_no(response):
     """
-    Checks to see if parameter is 'y'/'yes'/'n'/'no' 
+    Checks to see if user-generated string response is 'y'/'yes'/'n'/'no' and is 
+    case-insensitive
 
-    :param response compared to 'y','yes','n','no'
+    :param: response the response that the user generated indicating whether
+    they choose to 'hit' or 'stay' and is case insensitive (i.e. 'y','Y','Yes',
+    'yEs')
+    :type: str
 
     :return: True when response is 'y' or 'yes'
     :return: False when response is 'n' or 'no'
     :return: None when response is none of four options
     """
-
-    if response.lower() == "y" or response.lower() == "yes":
+    lowercase_response = response.lower()
+    if lowercase_response in ['y','yes']:
         return True
-    elif response.lower() == "n" or response.lower() == "no":
+    elif lowercase_response in ['n','no']:
         return False
     else:
         return None
@@ -30,10 +33,10 @@ def check_equal_yes_or_no(response):
 # ............................................................................ #
 def check_equal_hit_or_stay(response):
     """
-    Takes in a string response and checks to see if it equals 'hit','h','stay',
-    or 's' a
+    Takes in a user-generated string response and checks to see if it equals
+    'hit','h','stay', or 's' and is case-insensitive
 
-    :param response: player response indicating whether they choose 'hit' or
+    :param: response: player response indicating whether they choose 'hit' or
     'stay'. Is case insensitive (i.e. you can use 'hit' or 'HIT' or 'hIT')
     :type: str
 
@@ -42,9 +45,10 @@ def check_equal_hit_or_stay(response):
     :return: None if response is anything else
     :rtype: bool or None
     """
-    if response.lower() == "hit" or response.lower() == "h":
+    lowercase_response = response.lower()
+    if lowercase_response in ['hit','h']:
         return True
-    elif response.lower() == "stay" or response.lower() == "s":
+    elif lowercase_response in ['stay','s']
         return False
     else:
         return None
@@ -53,9 +57,11 @@ def check_equal_hit_or_stay(response):
 # ............................................................................ #
 def get_player_number():
     """
-    Gets the number of players playing for the user
+    Gets the number of players playing for the user. If the user gives a non-
+    numeric response, the prompt will change and loop until a valid response
+    is given
 
-    :return:: player_number
+    :return: player_number
     :rtype: int
     """
     player_number_string = input("Cool, how many players are playing? ")
@@ -64,7 +70,8 @@ def get_player_number():
         player_number = int(player_number_string)
     else:
         while True:
-            player_number_string = input("That's not a number! Could you say it again in numeric format? ")
+            player_number_string = input("That's not a number! Could you say \
+                it again in numeric format? ")
             if player_number_string.isnumeric() == True:
                 player_number = int(player_number_string)
                 break
@@ -76,13 +83,13 @@ def get_player_number():
 # ............................................................................ #
 def reveal_player_cards(player):
     """
-    Reveals cards by printing to the terminal
+    Reveals cards of one player by printing to the terminal
 
-    :param player instance of Player class
+    :param: player instance of Player class
     """
     player_cards = player.get_hand()
     player_raw_cards = (card.get_raw_card() for card in player_cards)
-    player_name = player.get_name()
+    player_name = player.name
     print(player_name + ", you have a " + (' and a ').join(player_raw_cards))
 
 
@@ -98,9 +105,11 @@ def game_introduction():
 # ............................................................................ #
 def get_player_names(player_number):
     """
-    Prompts user to provide a name
+    Prompts user to provide the names for each user playing. The number of names
+    that the user needs to provide is based on the number of player that will
+    be playing. The prompt will change after the first 
 
-    :return: player_names array that represents player names"""
+    :return: player_names list that represents player names"""
     player_names = []
     player_name = input("Awesome! Well I don't want to be rude, let's start with the first player's name: ")
     player_names.append(player_name)
@@ -112,7 +121,10 @@ def get_player_names(player_number):
 
 # ............................................................................ #
 def init_dealer():
-    """ Initializes a Player object with dealer attribute as True
+    """
+    Initializes a dealer that we will use for the Blackjack instance we create.
+    We use the Player class and set the dealer attribute to True to create a 
+    dealer
 
     :return: dealer instance of Player class
     """
@@ -123,25 +135,27 @@ def init_dealer():
 # ............................................................................ #
 def init_players(player_names):
     """
-    Initializes two plaer objects
+    Initializes two player objects using their names that are provided by
+    another function. The names are provided in a list
 
-    :param player_name string to represent name of player
+    :param: player_name string to represent name of player
 
-    :return: player_array array of players with dealer at index 0
+    :return: player_list list of players with dealer at index 0
     """
-    player_array = []
+    player_list = []
     for name in player_names:
         player = Player(name = name)
-        player_array.append(player)
-    return player_array
+        player_list.append(player)
+    return player_list
 
 
 # ............................................................................ #
 def create_standard_deck_of_cards():
     """
-    Creates standard 52 card deck
+    Creates a standard 52 card deck
 
-    :return: deck Deck object
+    :return: deck the deck that will be used in  
+    :rtype: Deck
     """
     values = ['2','3','4','5','6','7','8','9','10','Jack','Queen','King','Ace']
     suits = ['Diamonds','Clubs','Hearts','Spades']
@@ -151,14 +165,18 @@ def create_standard_deck_of_cards():
 
 
 # ............................................................................ #
-def setup_blackjack_game(players, dealer, deck):
+def create_blackjack_game(players, dealer, deck):
     """
-    Sets up a game of blackjack with players and a deck by creating a Blackjack object
+    Creates a game of blackjack with players and a deck by creating a Blackjack 
+    object
 
-    :param players array consisting of 2 Player objects
-    :param deck Deck object
+    :param: the players playing in the blackjack game
+    :type: list holding the numbers of players
+    :param: the deck to be used in the blackjack game
 
-    :return: blackjack instance of Blackjack object"""
+    :return: the newly created blackjack game
+    :rtype: Blackjack
+    """
     blackjack = Blackjack(deck = deck, dealer = dealer, players = players)
     return blackjack
 
@@ -166,17 +184,17 @@ def setup_blackjack_game(players, dealer, deck):
 # ............................................................................ #
 def check_user_will_play():
     """
-    Logic to check to see if user will play
-
-    Uses check_prompt_response function above
-
+    Checks to see if user will play. Uses check_prompt_response function above
     Prompted question changes if True or False is not returned the first time
 
     :return: True if user wants to play
+    :rtype: bool
     :return: False if user does NOT want to play
+    :rtype: bool
     """
 
-    user_play_prompt = "Hello there! Would you like to play some blackjack? It's a one on one! (y/n) "
+    user_play_prompt = "Hello there! Would you like to play some blackjack? It's\
+     a one on one! (y/n) "
     user_play_prompt_response = input(user_play_prompt)
     user_will_play = check_equal_yes_or_no(user_play_prompt_response)
     goodbye = "Alright then, maybe next time! Toodaloo~ :)"
@@ -187,7 +205,8 @@ def check_user_will_play():
         return False
     else:
         while True:
-            user_play_prompt = "Hmmm, didn't quite get that. Could you repeat yourself please? "
+            user_play_prompt = "Hmmm, didn't quite get that. Could you repeat \
+            yourself please? "
             user_play_prompt_response = input(user_play_prompt)
             user_will_play = check_equal_yes_or_no(user_play_prompt_response)
             if user_will_play == True:
@@ -203,9 +222,10 @@ def check_user_will_play():
 # ............................................................................ #
 def check_user_hit():
     """
-    Logic to check if user will hit or stay in blackjack
-
-    Uses check_prompt_response function above
+    Checks to see if the user will hit or stay during their round. The terminal
+    will prompt to check the user's input. The prompt will change once if the
+    user's response is not 'hit'/'h'/'stay'/'s'. Uses check_prompt_response
+    function above
 
     Prompted question changes if True or False is not returned the first time
 
@@ -237,7 +257,7 @@ def reveal_dealer_card(blackjack):
     """
     Reveals the initial face-up dealer card in blackjack to user by printing through the terminal
     
-    :param blackjack instance of Blackjack class
+    :param: blackjack instance of Blackjack class
     """
     revealed_dealer_card = blackjack.get_revealed_dealer_card()
     print("The dealer is showing a " + revealed_dealer_card.get_raw_card())
@@ -248,7 +268,7 @@ def reveal_dealer_hand(blackjack):
     """
     Reveals entire dealer's hand to user
 
-    :param blackjack instance of Blackjack class
+    :param: blackjack instance of Blackjack class
     """
 
     dealer = blackjack.dealer
@@ -326,7 +346,7 @@ def reveal_final_dealer_hand_value(blackjack):
     """
     Reveals dealer's final hand value to user in terminal
 
-    :param blackjack instance of Blackjack class
+    :param: blackjack instance of Blackjack class
     """
     dealer = blackjack.get_dealer()
     dealer_hand_value = dealer.get_value_of_hand()
@@ -368,7 +388,7 @@ def main():
             else:
                 pass
 
-            # This block loops through all the players array in Blackjack if the dealer busted
+            # This block loops through all the players list in Blackjack if the dealer busted
             # and sets all Players won_round to True if they did not bust
             blackjack_players = blackjack.get_players()
             dealer_busted = dealer.check_bust()

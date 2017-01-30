@@ -10,20 +10,32 @@ class Card(object):
 	def __init__(self, value, suit):
 
 		"""
-		:param value string that represents card value 
-		:param suit string that represents the suit of a card
-		:param raw_card string that combines value and suit (ex. 'Jack of
+		:param: value string that represents card value 
+		:param: suit string that represents the suit of a card
+		:param: raw_card string that combines value and suit (ex. 'Jack of
 		Spades')
 		"""
 	
-		self.value = value
-		self.suit = suit
-		self.raw_card = value + " of " + suit
+		self._value = value
+		self._suit = suit
+		self._raw_card = value + " of " + suit
+
+# ...........................................................................  #
+	@property
+	def suit(self):
+		return self._suit
 
 
 # ........................................................................... #
-	def get_raw_card(self):
-		return self.raw_card
+	@property
+	def raw_card(self):
+		return self._raw_card
+
+
+# ........................................................................... #
+	@property
+	def value(self):
+		return self._value
 
 
 # ........................................................................... #

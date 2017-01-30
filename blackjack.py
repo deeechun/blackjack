@@ -14,14 +14,13 @@ class Blackjack(object):
 # ........................................................................... #
     def __init__(self, players, dealer, deck):
         """
-        :param players array of Player objects
-        :param dealer instance of Player class
-        :param deck instance of Deck
+        :param: players list of Player objects
+        :param: dealer instance of Player class
+        :param: deck instance of Deck
         """        
         self.players = players
         self.dealer = dealer
         self.deck = deck
-
 
 # ........................................................................... #
     def get_dealer(self):
@@ -34,17 +33,26 @@ class Blackjack(object):
 
 
 # ........................................................................... #
-    def get_deck(self):
+    @property
+    def deck(self):
         return self.deck
+
+
+# ........................................................................... #
+    @deck.setter
+    def deck(self, list_of_cards):
+
 
 
 # ........................................................................... #
     def get_revealed_dealer_card(self):
         """
-        Gets the revealed card of the dealer after the deal
-        Set it so the card is in index 1 for the dealer
+        Gets the revealed card of the dealer after the deal. Set it so the \
+        card is in index 1 for the dealer
 
-        :returns revealed_dealer_card instance of Card that represents the revealed card"""
+        :return: the revealed card that the dealer possesses in hand
+        :rtype Card
+        """
         dealer_hand = self.dealer.get_hand()
         revealed_dealer_card = dealer_hand[1]
         return revealed_dealer_card
@@ -55,7 +63,7 @@ class Blackjack(object):
         """
         Deals cards for one round of blackjack
 
-        :param blackjack instance of Blackjack
+        :param: blackjack the blackjack game that you want to deal a round for
         """
         for card_number in range(2):
             dealer_dealt_card = self.deck.get_one_card()
@@ -70,10 +78,10 @@ class Blackjack(object):
         """
         Facilitates the player's hit round in blackjack. Default value for hit is False
 
-        :param player instance of Player object
-        :param will_hit boolean to signify whether a player will hit or not
+        :param: player instance of Player object
+        :param: will_hit boolean to signify whether a player will hit or not
 
-        :returns hit_card Card object that the Player just hit
+        :return: hit_card Card object that the Player just hit
         """
         hand_value = player.get_value_of_hand()
         player_name = player.get_name()
@@ -100,7 +108,7 @@ class Blackjack(object):
 # ........................................................................... #
     def check_player_beats_dealer(self, player):
         """
-        Checks to see if Player in self.players array numerical hand value beats
+        Checks to see if Player in self.players list numerical hand value beats
         dealer's hand in blackjack game
         
 
@@ -121,7 +129,7 @@ class Blackjack(object):
         """
         Adds card to hand - acts as 'hit' in blackjack'
 
-        :param player instance of Player class
+        :param: player instance of Player class
         """
         hit_card = self.deck.get_one_card()
         player.add_card_to_hand(hit_card)

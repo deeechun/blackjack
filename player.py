@@ -4,14 +4,14 @@ class Player(object):
 	"""
 	# counter to keep track of number of players
 	_counter = 0
-	def __init__(self,name = "", is_dealer = False, blackjack = False, 
+	def __init__(self, _name = "", is_dealer = False, blackjack = False, 
 		won_round = False, busted = False):
 		"""
-		:param name string that defines the player's name
-		:param dealer boolean that's True if you are dealer; defaults False
-		:param hand array that represents hand of player; defaults to an empty array
-		:param blackjack boolean that's True on blackjack; defaults False
-		:param won_round boolean that's True on winning round; defaults False
+		:param: name string that defines the player's name
+		:param: dealer boolean that's True if you are dealer; defaults False
+		:param: hand list that represents hand of player; defaults to an empty list
+		:param: blackjack boolean that's True on blackjack; defaults False
+		:param: won_round boolean that's True on winning round; defaults False
 		"""
 		Player._counter += 1
 		self._name = _name
@@ -20,6 +20,8 @@ class Player(object):
 		self._blackjack = blackjack
 		self._won_round = won_round
 		self._busted = busted
+
+
 # ........................................................................... #
 	@property
 	def name(self):
@@ -40,10 +42,11 @@ class Player(object):
 
 # ........................................................................... #
 	@blackjack.setter
-	def blackjack(self, is_blackjack):
-		self._blackjack = is_blackjack
+	def blackjack(self, has_blackjack):
+		blackjack = self._blackjack
+		blackjack = has_blackjack
 
-
+		
 # ........................................................................... #
 	@property
 	def won_round(self):
@@ -51,9 +54,22 @@ class Player(object):
 
 
 # ........................................................................... #
+	@won_round.setter
+	def won_round(self, did_win_round):
+		self.won_round = did_win_round
+
+
+# ........................................................................... #
 	@property
 	def busted(self):
 		return self._busted
+
+
+# ........................................................................... #
+	@busted.setter
+	def busted(self, is_busted):
+		busted = self._busted
+		busted = is_busted
 
 
 # ........................................................................... #
@@ -64,23 +80,19 @@ class Player(object):
 
 # ........................................................................... #
 	@hand.setter
-	def busted(self, is_busted):
-		self.busted = is_busted
-
-
-# ........................................................................... #
-	@won_round.setter
-	def won_round(self, did_win_round):
-		self.won_round = did_win_round
+	def hand(self, card):
+		hand = self._hand
+		hand.append(card)
 
 
 # ........................................................................... #
 	def get_value_of_hand(self):
-		""" Get numerical value of hand in hand attribute
+		"""
+		Get numerical value of hand. Uses the hand attribute in player. 
+		:return: hand_value numerical value of hand
 
-		:returns hand_value numerical value of hand
-
-		Ex: If hand = ['10 of Spades', '2 of Diamonds'], returns 12"""
+		Ex: If hand = ['10 of Spades', '2 of Diamonds'], returns 12
+		"""
 		
 		hand_value = 0
 		
@@ -95,8 +107,9 @@ class Player(object):
 		"""
 		Checks to see if numerical value of Player hand is 21
 
-		:returns True if value of hand is 21
-		:returns False if value of hand is anything but 21
+		:return: True if value of hand is 21
+		:return: False if value of hand is anything but 21
+		:rtype: bool
 		"""
 		player_hand_value = self.get_value_of_hand()
 		if player_hand_value == 21:
@@ -110,7 +123,8 @@ class Player(object):
 # ........................................................................... #
 	def check_bust(self):
 		"""
-		Checks to see if numerical value of hand is greater than 21
+		Checks to see if numerical value of hand is greater than 21. Uses the
+		hand attribute of self
 		"""
 		player_hand_value = self.get_value_of_hand()
 		if player_hand_value > 21:
@@ -121,15 +135,15 @@ class Player(object):
 # ........................................................................... #
 	def add_card_to_hand(self, card):
 		"""
-		Appends a card to the Player hand array
+		Adds a card to the hand of the player. The card should be a Card object
+		but will accept any type. The program may throw an error if another
+		type is used when you call another function.
 
-		:param card instance of Card object
+		:param: card instance of Card object
 
-		:returns card instance of Card that was appended to hand
+		:return: card instance of Card that was appended to hand
 		"""
 		self.hand.append(card)
-		return card
-
 
 # ........................................................................... #
 	def reset_player(self):

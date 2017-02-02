@@ -109,7 +109,8 @@ def get_player_names(player_number):
     that the user needs to provide is based on the number of player that will
     be playing. The prompt will change after the first 
 
-    :return: player_names list that represents player names"""
+    :return: player_names list that represents player names
+    """
     player_names = []
     player_name = input("Awesome! Well I don't want to be rude, let's start with the first player's name: ")
     player_names.append(player_name)

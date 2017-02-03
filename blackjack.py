@@ -33,15 +33,8 @@ class Blackjack(object):
 
 
 # ........................................................................... #
-    @property
-    def deck(self):
+    def get_deck(self):
         return self.deck
-
-
-# ........................................................................... #
-    @deck.setter
-    def deck(self, list_of_cards):
-
 
 
 # ........................................................................... #
@@ -84,7 +77,7 @@ class Blackjack(object):
         :return: hit_card Card object that the Player just hit
         """
         hand_value = player.get_value_of_hand()
-        player_name = player.get_name()
+        player_name = player.name
         if will_hit == True:
             hit_card = self.hit(player)
             return hit_card

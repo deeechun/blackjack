@@ -48,7 +48,7 @@ def check_equal_hit_or_stay(response):
     lowercase_response = response.lower()
     if lowercase_response in ['hit','h']:
         return True
-    elif lowercase_response in ['stay','s']
+    elif lowercase_response in ['stay','s']:
         return False
     else:
         return None
@@ -88,7 +88,7 @@ def reveal_player_cards(player):
     :param: player instance of Player class
     """
     player_cards = player.get_hand()
-    player_raw_cards = (card.get_raw_card() for card in player_cards)
+    player_raw_cards = (card.raw_card for card in player_cards)
     player_name = player.name
     print(player_name + ", you have a " + (' and a ').join(player_raw_cards))
 
@@ -261,7 +261,7 @@ def reveal_dealer_card(blackjack):
     :param: blackjack instance of Blackjack class
     """
     revealed_dealer_card = blackjack.get_revealed_dealer_card()
-    print("The dealer is showing a " + revealed_dealer_card.get_raw_card())
+    print("The dealer is showing a " + revealed_dealer_card.raw_card)
 
 
 # ............................................................................ #
@@ -292,6 +292,25 @@ def reveal_dealer_hand(blackjack):
 
 
 # ............................................................................ #
+def setup_blackjack_game():
+    """
+    Sets up the blackjack game only if the user wants to play. 
+    """
+    player_will_play = check_user_will_play()
+    if player_will_play == True:
+        player_number = get_player_number()
+        player_names = get_player_names(player_number)
+        dealer = init_dealer()
+        players = init_players(player_names = player_names)
+        deck = create_standard_deck_of_cards()
+        blackjack = create_blackjack_game(players = players, dealer = dealer,
+                                            deck = deck)
+        return blackjack
+    else:
+        return
+
+
+# ............................................................................ #
 def check_user_play_again():
     """
     Checks to see if user wants to play again
@@ -319,6 +338,74 @@ def check_user_play_again():
 
 
 # ............................................................................ #
+def dealer_round(blackjack):
+    """
+    Performs the dealer's round. Nothing will happen is all of the players have
+    busted
+    """
+
+    # Loops through blackjack.players and checks to see if any instances have busted = True
+    # :return: True if any instance has busted == True
+    # :return: False if all instances have busted == False
+    all_players_busted = all(player.busted == True for player in 
+                            blackjack.players)
+    if all_players_busted == False:
+        blackjack.dealer_hit_round()
+        reveal_final_dealer_hand_value(blackjack)
+    else:
+        pass   
+
+
+# ............................................................................ #
+def reveal_user_outcomes(blackjack):
+    """
+    Reveals the outcomes of the players. Each of the player's outcomes will be
+    printed out into the terminal
+
+    :param: blackjack the game of blackjack that the players are a part of
+    """
+    for player in blackjack.players:
+        if player.won_round == True:
+            print(player.name + ", you won! Congrats!")
+        elif player.won_round == False:
+            print("You lost " + player.name + ". Better luck next time!")
+        else:
+            print(player.name + " , you tied")
+
+
+# ............................................................................ #
+def check_round_winners(blackjack):
+    """
+    Checks to see which players won in the round of blackjack. Player won_round
+    attribute will change if they won
+    """
+
+    # This function loops through all the players list in Blackjack if the
+    # dealer busted and sets all Players won_round to True if they did
+    # not bust
+    blackjack_players = blackjack.get_players()
+    dealer_busted = blackjack.dealer.check_bust()
+    if dealer_busted == True:
+        for player in blackjack_players:
+            if player.busted == False:
+                player.set_won_round(True)
+            else:
+                pass
+    else:
+        dealer_hand_value = blackjack.dealer.get_value_of_hand()
+        for player in blackjack_players:
+            player_hand_value = player.get_value_of_hand()
+            if player.busted == True:
+                pass
+            elif player_hand_value > dealer_hand_value:
+                player.set_won_round(True)
+            elif player_hand_value < dealer_hand_value:
+                pass
+            else:
+                player.set_won_round(None)
+
+
+# ............................................................................ #
 def player_round(blackjack):
     blackjack_players = blackjack.get_players()
     for player in blackjack_players:
@@ -330,12 +417,14 @@ def player_round(blackjack):
             player_hand_value = player.get_value_of_hand()
             user_will_hit = check_user_hit()
             while user_will_hit == True:
-                player_hit_card = blackjack.player_hit_round(player, will_hit = user_will_hit)
+                player_hit_card = blackjack.player_hit_round(player, will_hit =
+                                                             user_will_hit)
                 if player_hit_card != None:
-                    player_raw_card = player_hit_card.get_raw_card()
+                    player_raw_card = player_hit_card.raw_card
                     player_hand_value = player.get_value_of_hand()
                     print("You got a " + player_raw_card)
-                    print("Your new hand value is ", end = ""), print(player_hand_value)
+                    print("Your new hand value is ", end = "")
+                    print(player_hand_value)
                     player_bust = player.check_bust()
                     if player_bust == True:
                         break
@@ -355,22 +444,23 @@ def reveal_final_dealer_hand_value(blackjack):
     print(dealer_hand_value)
 
 
+def reset_players(blackjack):
+    dealer.reset_Player()
+    for player in blackjack.players:
+        player.reset_Player()
+
+
 # ............................................................................ #
 def main():
-    # Checks to see if user will play
-    # If user wants to play, will set up the blackjack game
-    # Takes in several inputs from user and creates a dealer, player(s), deck, and
-    # blackjack game
-    player_will_play = check_user_will_play()
-    if player_will_play == True:
-        player_number = get_player_number()
-        player_names = get_player_names(player_number)
-        dealer = init_dealer()
-        players = init_players(player_names = player_names)
-        deck = create_standard_deck_of_cards()
-        blackjack = setup_blackjack_game(players = players, dealer = dealer, deck = deck)
-        
-        # variable used to play continuous rounds
+    """
+    The main function of the game. Will run the entire game by calling
+    functions previously defined in this script
+    """
+    
+    blackjack = setup_blackjack_game()
+    blackjack_type = type(blackjack)
+    if blackjack_type == Blackjack:
+
         game_over = False
         while game_over == False:
             game_introduction()
@@ -378,40 +468,16 @@ def main():
             reveal_dealer_card(blackjack)
             player_round(blackjack)
             reveal_dealer_hand(blackjack)
-
-            # Loops through blackjack.players and checks to see if any instances have busted = True
-            # :return: True if any instance has busted == True
-            # :return: False if all instances have busted == False
-            all_players_busted = all(player.busted == True for player in blackjack.get_players())
-            if all_players_busted == False:
-                blackjack.dealer_hit_round()
-                reveal_final_dealer_hand_value(blackjack)
-            else:
-                pass
-
-            # This block loops through all the players list in Blackjack if the dealer busted
-            # and sets all Players won_round to True if they did not bust
-            blackjack_players = blackjack.get_players()
-            dealer_busted = dealer.check_bust()
-            if dealer_busted == True:
-                for player in blackjack.players:
-                    if player.busted == False:
-                        player.set_won_round(True)
-                    else:
-                        pass
-            else:
-                # block of code to set what players won
-                # hand value comparisons
-                pass
+            dealer_round(blackjack)
+            check_round_winners(blackjack)
+            reveal_user_outcomes(blackjack)
 
             # Checks to see if user will play again
             # If user will, loops through another round
             user_play_again = check_user_play_again()
             if user_play_again == True:
                 # Into reset_game method on BJ class
-                dealer.reset_Player()
-                for player in blackjack.players:
-                    player.reset_Player()
+                reset_players(blackjack)
             else:
                 game_over = True
     else:

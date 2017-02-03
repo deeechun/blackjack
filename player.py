@@ -4,7 +4,7 @@ class Player(object):
 	"""
 	# counter to keep track of number of players
 	_counter = 0
-	def __init__(self, _name = "", is_dealer = False, blackjack = False, 
+	def __init__(self, name = "", is_dealer = False, blackjack = False, 
 		won_round = False, busted = False):
 		"""
 		:param: name string that defines the player's name
@@ -14,9 +14,9 @@ class Player(object):
 		:param: won_round boolean that's True on winning round; defaults False
 		"""
 		Player._counter += 1
-		self._name = _name
+		self._name = name
 		self._is_dealer = is_dealer
-		self._hand = []
+		self.hand = []
 		self._blackjack = blackjack
 		self._won_round = won_round
 		self._busted = busted
@@ -25,7 +25,7 @@ class Player(object):
 # ........................................................................... #
 	@property
 	def name(self):
-		return _name
+		return self._name
 
 
 # ........................................................................... #
@@ -73,16 +73,8 @@ class Player(object):
 
 
 # ........................................................................... #
-	@property
-	def hand(self):
-		return self._hand
-
-
-# ........................................................................... #
-	@hand.setter
-	def hand(self, card):
-		hand = self._hand
-		hand.append(card)
+	def get_hand(self):
+		return self.hand
 
 
 # ........................................................................... #

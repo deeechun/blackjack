@@ -30,7 +30,7 @@ class Deck(object):
         
         # generates an index between 0 and length of the list, then pops off
         # the entry at that list index and stores in dealt_card namespace
-        number_cards = len(cards)
+        number_cards = len(self.cards)
         random_card_index = floor(random() * number_cards)
         dealt_card = self.cards.pop(random_card_index)
         return dealt_card
@@ -63,7 +63,7 @@ class Deck(object):
         for value in values:
             for suit in suits:
                 card = Card(value, suit)
-                list_of_card_objects.append(card)
+                list_of_cards.append(card)
 
 
         return list_of_cards

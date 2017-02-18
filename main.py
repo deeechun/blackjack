@@ -6,8 +6,203 @@ from player import Player
 from blackjack import Blackjack
 
 
+
+
 # ............................................................................ #
-def check_equal_yes_or_no(response):
+def reveal_player_cards(player):
+    """
+    Reveals cards of one player by printing to the terminal
+
+    :param: player instance of Player class
+    """
+    player_cards = player.get_hand()
+    player_raw_cards = (card.raw_card for card in player_cards)
+    player_name = player.name
+    print(player_name + ", you have a " + (' and a ').join(player_raw_cards))
+
+
+
+# ............................................................................ #
+def reveal_dealer_card(blackjack):
+    """
+    Reveals the initial face-up dealer card in blackjack to user by printing through the terminal
+    
+    :param: blackjack instance of Blackjack class
+    """
+    revealed_dealer_card = blackjack.get_revealed_dealer_card()
+    print("The dealer is showing a " + revealed_dealer_card.raw_card)
+
+
+# ............................................................................ #
+def reveal_dealer_hand(blackjack):
+    """
+    Reveals entire dealer's hand to user
+
+    :param: blackjack instance of Blackjack class
+    """
+
+    dealer = blackjack.dealer
+    dealer_hand = dealer.get_hand()
+    dealer_new_revealed_card = dealer_hand[0]
+    dealer_already_revealed_card = dealer_hand[1]
+
+    print("The dealer flips...")
+    print("*~*~*~FLIP~*~*~*")
+
+    print("The dealer's hidden card was the.... " + \
+           dealer_new_revealed_card.raw_card)
+
+    print("The dealer's hand is the " + \
+          dealer_already_revealed_card.raw_card + \
+          " and the " + dealer_new_revealed_card.raw_card)
+
+    print("The dealer's hand value is ", end = "")
+    print(dealer.get_value_of_hand())
+
+
+
+
+# ............................................................................ #
+def dealer_round(blackjack):
+    """
+    Performs the dealer's round. Nothing will happen is all of the players have
+    busted
+    """
+
+    # Loops through blackjack.players and checks to see if any instances have busted = True
+    # :return: True if any instance has busted == True
+    # :return: False if all instances have busted == False
+    all_players_busted = all(player.busted == True for player in 
+                            blackjack.players)
+    if all_players_busted == False:
+        blackjack.dealer_hit_round()
+        reveal_final_dealer_hand_value(blackjack)
+    else:
+        pass   
+
+
+# ............................................................................ #
+def reveal_user_outcomes(blackjack):
+    """
+    Reveals the outcomes of the players. Each of the player's outcomes will be
+    printed out into the terminal
+
+    :param: blackjack the game of blackjack that the players are a part of
+    """
+    for player in blackjack.players:
+        if player.won_round == True:
+            print(player.name + ", you won! Congrats!")
+        elif player.won_round == False:
+            print("You lost " + player.name + ". Better luck next time!")
+        else:
+            print(player.name + " , you tied")
+
+
+# ............................................................................ #
+def check_round_winners(blackjack):
+    """
+    Checks to see which players won in the round of blackjack. Player won_round
+    attribute will change if they won
+    """
+
+    # This function loops through all the players list in Blackjack if the
+    # dealer busted and sets all Players won_round to True if they did
+    # not bust
+    blackjack_players = blackjack.get_players()
+    dealer_busted = blackjack.dealer.check_bust()
+    if dealer_busted == True:
+        for player in blackjack_players:
+            if player.busted == False:
+                player.set_won_round(True)
+            else:
+                pass
+    else:
+        dealer_hand_value = blackjack.dealer.get_value_of_hand()
+        for player in blackjack_players:
+            player_hand_value = player.get_value_of_hand()
+            if player.busted == True:
+                pass
+            elif player_hand_value > dealer_hand_value:
+                player.set_won_round(True)
+            elif player_hand_value < dealer_hand_value:
+                pass
+            else:
+                player.set_won_round(None)
+
+
+# ............................................................................ #
+def player_round(blackjack):
+    blackjack_players = blackjack.get_players()
+    for player in blackjack_players:
+        reveal_player_cards(player)
+        player_has_blackjack = player.check_for_blackjack()
+        if player_has_blackjack == True:
+            print("BLACKJACK! Congrats!")
+        else:
+            player_hand_value = player.get_value_of_hand()
+            user_will_hit = ask_user_yes_or_no("Would you like to hit? ")
+            while user_will_hit == True:
+                player_hit_card = blackjack.player_hit_round(player, will_hit =
+                                                             user_will_hit)
+                if player_hit_card != None:
+                    player_raw_card = player_hit_card.raw_card
+                    player_hand_value = player.get_value_of_hand()
+                    print("You got a " + player_raw_card)
+                    print("Your new hand value is ", end = "")
+                    print(player_hand_value)
+                    player_bust = player.check_bust()
+                    if player_bust == True:
+                        break
+                user_will_hit = ask_user_yes_or_no("Would you like to hit? ")
+
+
+# ............................................................................ #
+def reveal_final_dealer_hand_value(blackjack):
+    """
+    Reveals dealer's final hand value to user in terminal
+
+    :param: blackjack instance of Blackjack class
+    """
+    dealer = blackjack.get_dealer()
+    dealer_hand_value = dealer.get_value_of_hand()
+    print("The dealer's final total is ", end = "")
+    print(dealer_hand_value)
+
+
+# ............................................................................ #
+def reset_players(blackjack):
+    blackjack.dealer.reset_player()
+    for player in blackjack.players:
+        player.reset_player()
+
+
+# ............................................................................ #
+def ask_user_yes_or_no(player_prompt):
+    """
+    Checks to see if user will play. Uses check_prompt_response function above
+    Prompted question changes if True or False is not returned the first time
+
+    :return: True if user wants to play
+    :rtype: bool
+    :return: False if user does NOT want to play
+    :rtype: bool
+    """
+    player_response = False
+    repeat_text = "Didn't quite get that. Could you repeat yourself please? "
+    while True:
+        try:
+            player_response = prompt_player(player_prompt)
+            break
+        except Exception as e:
+            player_prompt = repeat_text
+
+    return player_response
+
+
+# ............................................................................ #
+
+def prompt_player(prompt_text):
+
     """
     Checks to see if user-generated string response is 'y'/'yes'/'n'/'no' and is 
     case-insensitive
@@ -21,38 +216,29 @@ def check_equal_yes_or_no(response):
     :return: False when response is 'n' or 'no'
     :return: None when response is none of four options
     """
+    response = input(prompt_text)
     lowercase_response = response.lower()
-    if lowercase_response in ['y','yes']:
+    if lowercase_response in ['y', 'yes']:
         return True
     elif lowercase_response in ['n','no']:
         return False
     else:
-        return None
+        raise Exception('Invalid player response')
 
 
 # ............................................................................ #
-def check_equal_hit_or_stay(response):
+def setup_blackjack_game():
     """
-    Takes in a user-generated string response and checks to see if it equals
-    'hit','h','stay', or 's' and is case-insensitive
-
-    :param: response: player response indicating whether they choose 'hit' or
-    'stay'. Is case insensitive (i.e. you can use 'hit' or 'HIT' or 'hIT')
-    :type: str
-
-    :return: True if response is 'hit' or 'h'
-    :return: False if response is 'stay' or 's'
-    :return: None if response is anything else
-    :rtype: bool or None
+    Sets up the blackjack game only if the user wants to play. 
     """
-    lowercase_response = response.lower()
-    if lowercase_response in ['hit','h']:
-        return True
-    elif lowercase_response in ['stay','s']:
-        return False
-    else:
-        return None
-
+    player_number = get_player_number()
+    player_names = get_player_names(player_number)
+    dealer = init_dealer()
+    players = init_players(player_names = player_names)
+    deck = create_standard_deck_of_cards()
+    blackjack = create_blackjack_game(players = players, dealer = dealer,
+                                        deck = deck)
+    return blackjack
 
 # ............................................................................ #
 def get_player_number():
@@ -78,28 +264,6 @@ def get_player_number():
             else:
                 pass
     return player_number
-
-
-# ............................................................................ #
-def reveal_player_cards(player):
-    """
-    Reveals cards of one player by printing to the terminal
-
-    :param: player instance of Player class
-    """
-    player_cards = player.get_hand()
-    player_raw_cards = (card.raw_card for card in player_cards)
-    player_name = player.name
-    print(player_name + ", you have a " + (' and a ').join(player_raw_cards))
-
-
-# ............................................................................ #
-def game_introduction():
-    """
-    Function does nothing but print to terminal
-    """
-    print("Alright then, let's begin!")
-    print("~*~swipe swipe swipe swipe ~*~*~")
 
 
 # ............................................................................ #
@@ -183,271 +347,12 @@ def create_blackjack_game(players, dealer, deck):
 
 
 # ............................................................................ #
-def check_user_will_play():
+def game_introduction():
     """
-    Checks to see if user will play. Uses check_prompt_response function above
-    Prompted question changes if True or False is not returned the first time
-
-    :return: True if user wants to play
-    :rtype: bool
-    :return: False if user does NOT want to play
-    :rtype: bool
+    Function does nothing but print to terminal
     """
-
-    user_play_prompt = "Hello there! Would you like to play some blackjack? It's\
-     a one on one! (y/n) "
-    user_play_prompt_response = input(user_play_prompt)
-    user_will_play = check_equal_yes_or_no(user_play_prompt_response)
-    goodbye = "Alright then, maybe next time! Toodaloo~ :)"
-    if user_will_play == True:
-        return True
-    elif user_will_play == False:
-        print(goodbye)
-        return False
-    else:
-        while True:
-            user_play_prompt = "Hmmm, didn't quite get that. Could you repeat \
-            yourself please? "
-            user_play_prompt_response = input(user_play_prompt)
-            user_will_play = check_equal_yes_or_no(user_play_prompt_response)
-            if user_will_play == True:
-                return True
-            elif user_will_play == False:
-                print(goodbye)
-                return False
-            else:
-                # pass to continue loop
-                pass
-
-
-# ............................................................................ #
-def check_user_hit():
-    """
-    Checks to see if the user will hit or stay during their round. The terminal
-    will prompt to check the user's input. The prompt will change once if the
-    user's response is not 'hit'/'h'/'stay'/'s'. Uses check_prompt_response
-    function above
-
-    Prompted question changes if True or False is not returned the first time
-
-    :return: True if hit
-    :return: False if stay
-    """
-    user_hit_prompt = "Would you like to hit or stay? "
-    user_hit_prompt_response = input(user_hit_prompt)
-    user_will_hit = check_equal_hit_or_stay(user_hit_prompt_response)
-    if user_will_hit:
-        return True
-    elif user_will_hit == False:
-        return False
-    else:
-        while True:
-            user_hit_prompt = "I didn't get that. Could you say 'hit' or 'stay'? "
-            user_hit_prompt_response = input(user_hit_prompt)
-            user_will_hit = check_equal_hit_or_stay(user_hit_prompt_response)
-            if user_will_hit == True:
-                return True
-            elif user_will_hit == False:
-                return False
-            else:
-                pass
-
-
-# ............................................................................ #
-def reveal_dealer_card(blackjack):
-    """
-    Reveals the initial face-up dealer card in blackjack to user by printing through the terminal
-    
-    :param: blackjack instance of Blackjack class
-    """
-    revealed_dealer_card = blackjack.get_revealed_dealer_card()
-    print("The dealer is showing a " + revealed_dealer_card.raw_card)
-
-
-# ............................................................................ #
-def reveal_dealer_hand(blackjack):
-    """
-    Reveals entire dealer's hand to user
-
-    :param: blackjack instance of Blackjack class
-    """
-
-    dealer = blackjack.dealer
-    dealer_hand = dealer.get_hand()
-    dealer_new_revealed_card = dealer_hand[0]
-    dealer_already_revealed_card = dealer_hand[1]
-
-    print("The dealer flips...")
-    print("*~*~*~FLIP~*~*~*")
-
-    print("The dealer's hidden card was the.... " + \
-           dealer_new_revealed_card.raw_card)
-
-    print("The dealer's hand is the " + \
-          dealer_already_revealed_card.raw_card + \
-          " and the " + dealer_new_revealed_card.raw_card)
-
-    print("The dealer's hand value is ", end = "")
-    print(dealer.get_value_of_hand())
-
-
-# ............................................................................ #
-def setup_blackjack_game():
-    """
-    Sets up the blackjack game only if the user wants to play. 
-    """
-    player_will_play = check_user_will_play()
-    if player_will_play == True:
-        player_number = get_player_number()
-        player_names = get_player_names(player_number)
-        dealer = init_dealer()
-        players = init_players(player_names = player_names)
-        deck = create_standard_deck_of_cards()
-        blackjack = create_blackjack_game(players = players, dealer = dealer,
-                                            deck = deck)
-        return blackjack
-    else:
-        return
-
-
-# ............................................................................ #
-def check_user_play_again():
-    """
-    Checks to see if user wants to play again
-    """
-    user_play_again_response = input("Would you like to play again? ")
-    user_will_play_again = check_equal_yes_or_no(user_play_again_response)
-    goodbye = "Alright then, maybe next time! Toodaloo~ :)"
-    if user_will_play_again == True:
-        return True
-    elif user_will_play_again == False:
-        print(goodbye)
-        return False
-    else:
-        while True:
-            user_play_again_response = input("Hmmm, didn't quite get that. Could you repeat yourself please? ")
-            user_will_play_again = check_equal_yes_or_no(user_play_again_response)
-            if user_will_play_again == True:
-                return True
-            elif user_will_play_again == False:
-                print(goodbye)
-                return False
-            else:
-                # pass to continue loop
-                pass
-
-
-# ............................................................................ #
-def dealer_round(blackjack):
-    """
-    Performs the dealer's round. Nothing will happen is all of the players have
-    busted
-    """
-
-    # Loops through blackjack.players and checks to see if any instances have busted = True
-    # :return: True if any instance has busted == True
-    # :return: False if all instances have busted == False
-    all_players_busted = all(player.busted == True for player in 
-                            blackjack.players)
-    if all_players_busted == False:
-        blackjack.dealer_hit_round()
-        reveal_final_dealer_hand_value(blackjack)
-    else:
-        pass   
-
-
-# ............................................................................ #
-def reveal_user_outcomes(blackjack):
-    """
-    Reveals the outcomes of the players. Each of the player's outcomes will be
-    printed out into the terminal
-
-    :param: blackjack the game of blackjack that the players are a part of
-    """
-    for player in blackjack.players:
-        if player.won_round == True:
-            print(player.name + ", you won! Congrats!")
-        elif player.won_round == False:
-            print("You lost " + player.name + ". Better luck next time!")
-        else:
-            print(player.name + " , you tied")
-
-
-# ............................................................................ #
-def check_round_winners(blackjack):
-    """
-    Checks to see which players won in the round of blackjack. Player won_round
-    attribute will change if they won
-    """
-
-    # This function loops through all the players list in Blackjack if the
-    # dealer busted and sets all Players won_round to True if they did
-    # not bust
-    blackjack_players = blackjack.get_players()
-    dealer_busted = blackjack.dealer.check_bust()
-    if dealer_busted == True:
-        for player in blackjack_players:
-            if player.busted == False:
-                player.set_won_round(True)
-            else:
-                pass
-    else:
-        dealer_hand_value = blackjack.dealer.get_value_of_hand()
-        for player in blackjack_players:
-            player_hand_value = player.get_value_of_hand()
-            if player.busted == True:
-                pass
-            elif player_hand_value > dealer_hand_value:
-                player.set_won_round(True)
-            elif player_hand_value < dealer_hand_value:
-                pass
-            else:
-                player.set_won_round(None)
-
-
-# ............................................................................ #
-def player_round(blackjack):
-    blackjack_players = blackjack.get_players()
-    for player in blackjack_players:
-        reveal_player_cards(player)
-        player_has_blackjack = player.check_for_blackjack()
-        if player_has_blackjack == True:
-            print("BLACKJACK! Congrats!")
-        else:
-            player_hand_value = player.get_value_of_hand()
-            user_will_hit = check_user_hit()
-            while user_will_hit == True:
-                player_hit_card = blackjack.player_hit_round(player, will_hit =
-                                                             user_will_hit)
-                if player_hit_card != None:
-                    player_raw_card = player_hit_card.raw_card
-                    player_hand_value = player.get_value_of_hand()
-                    print("You got a " + player_raw_card)
-                    print("Your new hand value is ", end = "")
-                    print(player_hand_value)
-                    player_bust = player.check_bust()
-                    if player_bust == True:
-                        break
-                user_will_hit = check_user_hit()
-
-
-# ............................................................................ #
-def reveal_final_dealer_hand_value(blackjack):
-    """
-    Reveals dealer's final hand value to user in terminal
-
-    :param: blackjack instance of Blackjack class
-    """
-    dealer = blackjack.get_dealer()
-    dealer_hand_value = dealer.get_value_of_hand()
-    print("The dealer's final total is ", end = "")
-    print(dealer_hand_value)
-
-
-def reset_players(blackjack):
-    dealer.reset_Player()
-    for player in blackjack.players:
-        player.reset_Player()
+    print("Alright then, let's begin!")
+    print("~*~swipe swipe swipe swipe ~*~*~")
 
 
 # ............................................................................ #
@@ -456,13 +361,12 @@ def main():
     The main function of the game. Will run the entire game by calling
     functions previously defined in this script
     """
-    
-    blackjack = setup_blackjack_game()
-    blackjack_type = type(blackjack)
-    if blackjack_type == Blackjack:
-
-        game_over = False
-        while game_over == False:
+    blackjack = None
+    while True:
+        user_will_play = ask_user_yes_or_no("Would you like to play a game of blackjack? ")
+        if user_will_play:
+            if blackjack == None:
+                blackjack = setup_blackjack_game()
             game_introduction()
             blackjack.deal_round()
             reveal_dealer_card(blackjack)
@@ -471,17 +375,9 @@ def main():
             dealer_round(blackjack)
             check_round_winners(blackjack)
             reveal_user_outcomes(blackjack)
-
-            # Checks to see if user will play again
-            # If user will, loops through another round
-            user_play_again = check_user_play_again()
-            if user_play_again == True:
-                # Into reset_game method on BJ class
-                reset_players(blackjack)
-            else:
-                game_over = True
-    else:
-        quit()
+        else:
+            break
+    print("Goodbye.")
 
 
 # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ #
